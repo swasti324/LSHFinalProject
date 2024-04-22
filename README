@@ -1,1 +1,6 @@
-
+Steps:
+- parse file (filepath) -> list<string>
+- k-Shingling (list<string>, k) -> list<set<string>>
+- Create vocabulary (list<set<string>>) - list<string>
+- Create sparse vectors (vocab: list<string>, lines: list<string>)
+- Minhashing (sparse_vectors, vocab) -> 
