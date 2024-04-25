@@ -1,35 +1,44 @@
 package org.example
 
-class NearestNeighbor {
-    val alphabet: List<Char> = TODO()
-    val vocab: List<String> = TODO()
-    val nBands: Int = 10
+class NearestNeighbor(strings: List<String>) {
+//    val nBands: Int = 10
 
-    fun shingle(string: String): List<String> {
-        TODO()
+    init {
+        val shingles = strings.map {shingle(it)}
+
+        val vocabSet: LinkedHashSet<String> = LinkedHashSet()
+        shingles.forEach { set -> set.forEach { vocabSet.add(it) } }
+        val vocab = vocabSet.shuffled()
+
+        val sparseVectors = shingles.map { sparseVector(it, vocab) }
+        // val denseVectors = sparseVectors.map { denseVector(it) }
     }
 
-    fun sparseVector(string: String): List<Boolean> {
-        TODO()
+    fun shingle(string: String, k: Int = 2): Set<String> {
+        val shingles = mutableSetOf<String>()
+        for (i in 0..string.length-k) {
+            shingles.add(string.substring(i, i+k))
+        }
+        return shingles
     }
 
-    fun denseVector(sparse: List<Boolean>): List<Boolean> {
-        TODO()
+    fun sparseVector(shingles: Set<String>, vocab: List<String>): List<Boolean> {
+        return vocab.map { it in shingles }
     }
 
-    fun bin(dense: List<Boolean>) {
-        TODO()
-    }
+//    fun denseVector(sparseVector: List<Boolean>, hashes: List<List<Int>>): List<Int> {
+//        TODO()
+//    }
 
-    fun add(string: String) {
-        TODO()
-    }
+//    fun bin(dense: List<Boolean>) {
+//        TODO()
+//    }
 
-    fun findCandidates(string: String) {
-        TODO()
-    }
+//    fun findCandidates(string: String) {
+//        TODO()
+//    }
 
-    fun findClosest(string: String) {
-        TODO()
-    }
+//    fun findClosest(string: String) {
+//        TODO()
+//    }
 }
