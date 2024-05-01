@@ -22,4 +22,14 @@ class NearestNeighborTest {
         assertEquals("11000011".map { it == '1' }, nn.sparseVector(setOf("He", "el", "ll", "lo"), vocab))
         assertEquals("00111100".map { it == '1' }, nn.sparseVector(setOf("Wo", "or", "rl", "ld"), vocab))
     }
+
+    @Test
+    fun minHash() {
+        val near = NearestNeighbor(listOf(""))
+
+        val vocab = listOf("He", "el", "Wo", "or", "rl", "ld", "ll", "lo")
+
+        nn.minHash(vocab)
+        assertEquals("hello", "hello")
+    }
 }

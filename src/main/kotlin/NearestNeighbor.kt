@@ -1,11 +1,10 @@
 package org.example
-
+import kotlin.random.Random
 class NearestNeighbor(strings: List<String>) {
 //    val nBands: Int = 10
 
     init {
         val shingles = strings.map {shingle(it)}
-
         val vocabSet: LinkedHashSet<String> = LinkedHashSet()
         shingles.forEach { set -> set.forEach { vocabSet.add(it) } }
         val vocab = vocabSet.shuffled()
@@ -26,8 +25,22 @@ class NearestNeighbor(strings: List<String>) {
         return vocab.map { it in shingles }
     }
 
+    fun minHash(vocab: List<String>){
+        val hash = (1..vocab.size).toList().shuffled(Random.Default)
+
+        for (i in 1..vocab.size) {
+            val id = hash.indexOf(i)
+            val signature = vocab[id]
+            println("$i -> $id -> $signature")
+            if (signature == "signature") {
+                println("match!")
+                break
+            }
+        }
+    }
+
 //    fun denseVector(sparseVector: List<Boolean>, hashes: List<List<Int>>): List<Int> {
-//        TODO()
+//
 //    }
 
 //    fun bin(dense: List<Boolean>) {
