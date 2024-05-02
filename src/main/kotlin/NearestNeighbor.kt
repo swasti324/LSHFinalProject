@@ -7,40 +7,86 @@ class NearestNeighbor(
     denseVectorLength: Int = 100,
     numberOfBands: Int = 20)
 {
+    /**
+     * Find and print candidate pairs
+     */
     init {
+        // Create a set of shingles for each string
         val shingles = strings.map {shingle(it)}
+
+        // Create the vocab and add all the shingles from all the strings to it
         val vocabSet: LinkedHashSet<String> = LinkedHashSet()
         shingles.forEach { set -> set.forEach { vocabSet.add(it) } }
+
+        // Shuffle the vocab
         val vocab = vocabSet.shuffled()
 
+        // Create a 1-hot sparse vector for each string
         val sparseVectors = shingles.map { sparseVector(it, vocab) }
+
+        // Create a dense vector for each string, with a different hash for each element in the signature
         val hashes = List(denseVectorLength) { (List(vocab.size) { it }).shuffled() }
         val denseVectors = denseVectors(sparseVectors, hashes)
 
+        // Find the candidate pairs by banding the dense vectors and looking for matches
         val candidates = candidates(denseVectors, numberOfBands)
 
+        // Print the candidate pairs
         println(candidates)
     }
 
+    /**
+     * Create shingles of length [k] from a given [string] with no repeats
+     * @param string the string to shingle
+     * @param k the length of the shingles
+     * @return the set of shingles
+     */
     fun shingle(string: String, k: Int = 2): Set<String> {
+        // Create a set to store the shingles
         val shingles = mutableSetOf<String>()
+
+        // Loop through the string, moving the shingle window along and adding the shingle to the set
         for (i in 0..string.length-k) {
             shingles.add(string.substring(i, i+k))
         }
+
         return shingles
     }
 
+    /**
+     * Create a 1-hot encoded vector that stores what shingles from the vocab are present in the given list of shingles
+     * @param shingles the shingles to look for in the vocab
+     * @param vocab the vocabulary of all the given strings
+     * @return the list of boolean values, which tell if the matching element in the vocabulary is in the given shingles
+     */
     fun sparseVector(shingles: Set<String>, vocab: List<String>): List<Boolean> {
         return vocab.map { it in shingles }
     }
 
+    /**
+     * Create a list of dense vectors from a list of sparse vectors using MinHashing. This function works slightly
+     * differently than in the instructions and explanation. Instead of looping through the hash in the order of the
+     * elements and using the element number, it loops through the hash in order, and uses the values in the hash as
+     * the indices to check. This is equivalent in that it randomizes the order.
+     * @param sparseVectors the list of sparse vectors to MinHash
+     * @param hashes the list of hashes to use. The size of this list determines the length of the dense vectors. Each
+     * hash is the same length as the vocab and has the integers from zero to the length of the vocab minus one. These
+     * numbers are shuffled differently for each hash, but are importantly the same across sparse vector encodings.
+     * @return the list of dense vectors
+     */
     fun denseVectors(sparseVectors: List<List<Boolean>>, hashes: List<List<Int>>): List<List<Int>> {
+        // Create list to store the signatures
         val signatures = mutableListOf<List<Int>>()
 
+        // For each spase vector
         for (sparseVector in sparseVectors) {
+            // Create list to store the signature
             val signature = mutableListOf<Int>()
 
+            // For each hash
             for (hash in hashes) {
+                // Find the first value in the hash that is true in the sparse vector, then add its index to the
+                // signature. Once this is done, continue to the next hash.
                 for (i in hash.indices) {
                     if (sparseVector[hash[i]]) {
                         signature.add(i)
@@ -49,6 +95,7 @@ class NearestNeighbor(
                 }
             }
 
+            // Add the signature to the list of signatures
             signatures.add(signature)
         }
 
@@ -132,9 +179,25 @@ class NearestNeighbor(
         return candidates
     }
 
+    /**
+     * Find the jaccard distance between two lists of booleans. Jaccard distance is defined as the ratio between the
+     * intersection of A and B and the union of A and B.
+     * @param a first list of booleans to use
+     * @param b second list of booleans to use
+     * @return the jaccard distance between A and B, from 0.0 to 1.0
+     */
     fun jaccard(a: List<Boolean>, b: List<Boolean>): Double {
+        // Find the intersection of A and B
         val aANDb = (a.zip(b).map { if (it.first && it.second) 1 else 0 }).sum()
+
+        // Find the union of A and B
         val aORb = (a.zip(b).map { if (it.first || it.second) 1 else 0 }).sum()
-        return aANDb.toDouble() / aORb.toDouble()
+
+        // Return the ratio between the intersection of A and B and the union of A and B.
+        return if (aORb == 0) {
+            0.0
+        } else {
+            aANDb.toDouble() / aORb.toDouble()
+        }
     }
 }
