@@ -22,8 +22,39 @@ fun main() {
 #### by Dominic Salmieri and Swasti Jain
 
 ## Overview
+Most Hashing functions focus on categorizing information that is the same. 
+In order to categorize information that is similar we need to see what sections of the data are the same.
+The more the smaller chunks of data match, the higher the similarity.
+In this project we implemented Locality Sensitive Hashing algorithm to see the similarity between hundreds of famous quotes.
+The ```StringData.txt``` file holds a culmination of many quotes from this website https://blog.hubspot.com/sales/famous-quotes.
+This project aims to explain and implement the Locality Sensitive Hashing Algorithm. 
 
 ## Quotes
+We chose famous quotes as our data of choice.
+In order to parse through the text file we first created a function that would identify each quote and store the string in a list to be manipulated later
+
+```Kotlin
+fun parse():List<String> {
+    /*
+    looks for text file and reads the data, storing it in a data structure
+    
+    Args: none
+    
+    Returns: list of strings
+     */
+    val filePath = "./StringData.txt"
+    val file = File(filePath)
+    if (!file.exists()) {
+        println("File $filePath does not exist.")
+    }
+    val content = file.readText()
+    val lines = content.lines()
+
+    return lines
+}
+```
+This parse function as defined in the ```Main.kt``` file looks for the defined text file and reads the content.
+It returns a list of the quotes alone.
 
 ## Shingling and Vocabulary
 ![Locality Sensitive Hashing.png](LSH%20Presentation%20Images%2FLocality%20Sensitive%20Hashing.png)

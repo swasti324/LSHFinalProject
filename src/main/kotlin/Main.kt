@@ -3,6 +3,13 @@ import kotlin.random.Random
 import java.io.File
 
 fun parse():List<String> {
+    /*
+    looks for text file and reads the data, storing it in a data structure
+
+    Args: none
+
+    Returns: list of strings
+     */
     val filePath = "./StringData.txt"
     val file = File(filePath)
     if (!file.exists()) {
