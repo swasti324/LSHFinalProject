@@ -25,11 +25,45 @@ class NearestNeighborTest {
 
     @Test
     fun minHash() {
-        val near = NearestNeighbor(listOf(""))
+        val nn = NearestNeighbor(listOf(""))
 
         val vocab = listOf("He", "el", "Wo", "or", "rl", "ld", "ll", "lo")
 
         nn.minHash(vocab)
         assertEquals("hello", "hello")
+    }
+
+    @Test
+    fun band() {
+        val nn = NearestNeighbor(listOf(""))
+
+        val denseVectors = listOf(
+            listOf(4, 2, 6, 5, 7, 2),
+            listOf(4, 2, 2, 3, 6, 5),
+            listOf(5, 4, 5, 3, 6, 5)
+        )
+
+        println(nn.band(denseVectors, 3))
+    }
+
+    @Test
+    fun jaccard() {
+        val nn = NearestNeighbor(listOf(""))
+
+        assertEquals(1.0/3.0, nn.jaccard(
+            listOf(true, true, false),
+            listOf(false, true, true)))
+
+        assertEquals(1.0, nn.jaccard(
+            listOf(true, true),
+            listOf(true, true)))
+
+        assertEquals(0.0, nn.jaccard(
+            listOf(false, true),
+            listOf(true, false)))
+
+        assertEquals(0.5, nn.jaccard(
+            listOf(true, false),
+            listOf(true, true)))
     }
 }
