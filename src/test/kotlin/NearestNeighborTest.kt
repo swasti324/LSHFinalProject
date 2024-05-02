@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 
+import kotlin.random.Random
 class NearestNeighborTest {
 
     @Test
@@ -28,9 +29,13 @@ class NearestNeighborTest {
         val nn = NearestNeighbor(listOf(""))
 
         val vocab = listOf("He", "el", "Wo", "or", "rl", "ld", "ll", "lo")
+        val sparseVectors = Map(nn.sparseVector(setOf("He", "el", "ll", "lo"), vocab), nn.sparseVector(setOf("Wo","or", "rl", "ld")
+            val hash = (0..vocab.size).toList().shuffled(Random.Default)
 
-        nn.minHash(vocab)
-        assertEquals("hello", "hello")
+
+        val signatures = nn.minHash(sparseVectors, vocab)
+        print(signatures)
+
     }
 
     @Test

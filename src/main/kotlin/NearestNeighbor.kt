@@ -24,23 +24,32 @@ class NearestNeighbor(strings: List<String>) {
         return vocab.map { it in shingles }
     }
 
-    fun minHash(vocab: List<String>){
-        val hash = (1..vocab.size).toList().shuffled(Random.Default)
+    fun minHash(sparseVectors: List<List<Boolean>>, vocab: List<String>, hash:List<Int>):List<List<Int>>{
+//         vocab is given. list of index of vocab created
+//        shuffle the vocab many times?
+//        compare several shuffles with a sparse vector to generate a signature
+//        once a signature is created return it
 
-        for (i in 1..vocab.size) {
-            val id = hash.indexOf(i)
-            val signature = vocab[id]
-            println("$i -> $id -> $signature")
-            if (signature == "signature") {
-                println("match!")
-                break
+        //            for each element in shuffled hash
+//                shuffled hash, id takes the value of current(4 at index j = 0 for example)
+//                      check if sparsevector[i] ==1
+
+//                            add the hash id to the signature vector
+
+        val signatures = MutableList(sparseVectors.size) { mutableListOf<Int>() }
+
+        for (i in vocab.indices) {
+//            val hash = (0..vocab.size).toList().shuffled(Random.Default)
+            for (j in hash.indices){
+                val id = hash.indexOf(j)
+                if(sparseVectors[i][hash.indexOf(j)]){
+                    signatures[i].add(id)
+                }
             }
         }
+        return signatures
     }
 
-//    fun denseVector(sparseVector: List<Boolean>, hashes: List<List<Int>>): List<Int> {
-//
-//    }
 
     /**
      * Takes a list of [denseVectors] and bands them into [nBands] bands
