@@ -34,16 +34,48 @@ class NearestNeighborTest {
     }
 
     @Test
-    fun band() {
+    fun candidates() {
         val nn = NearestNeighbor(listOf(""))
 
-        val denseVectors = listOf(
-            listOf(4, 2, 6, 5, 7, 2),
-            listOf(4, 2, 2, 3, 6, 5),
-            listOf(5, 4, 5, 3, 6, 5)
+        // Create dense vectors with the following matches
+        // 4, 2, 6, 5, -, -, 1, 4,
+        // 4, 2, -, -, 1, 5, -, -,
+        // -, -, -, -, 1, 5, 3, 2,
+        // -, -, -, -, 1, 5, -, -,
+        // -, -, 6, 5, -, -, 3, 2,
+        // -, -, -, -, 1, 5, 1, 4,
+        val denseVectors = mutableListOf(
+            mutableListOf(4, 2, 6, 5, 7, 9, 1, 4,),
+            mutableListOf(4, 2, 1, 2, 1, 5, 4, 3,),
+            mutableListOf(3, 4, 6, 1, 1, 5, 3, 2,),
+            mutableListOf(1, 5, 4, 5, 1, 5, 5, 1,),
+            mutableListOf(6, 2, 6, 5, 2, 3, 3, 2,),
+            mutableListOf(7, 2, 3, 4, 1, 5, 1, 4,),
         )
 
-        println(nn.band(denseVectors, 3))
+        // Those dense vectors should create these candidate pairs
+        val pairs = setOf(
+            Pair(0, 1),
+            Pair(0, 4),
+            Pair(0, 5),
+            Pair(1, 2),
+            Pair(1, 3),
+            Pair(1, 5),
+            Pair(2, 3),
+            Pair(2, 4),
+            Pair(2, 5),
+            Pair(3, 5),
+        )
+
+        // Make sure the candidates are correct
+        assertEquals(pairs, nn.candidates(denseVectors, 4))
+
+        // Make sure that an indivisible number of bands throws an exception
+        org.junit.jupiter.api.assertThrows<IllegalArgumentException> { nn.candidates(denseVectors, 3) }
+
+        // Make sure that having dense vectors of different sizes throws an exception
+        denseVectors[1].removeLast()
+        org.junit.jupiter.api.assertThrows<IllegalArgumentException> { nn.candidates(denseVectors, 4) }
     }
 
     @Test
