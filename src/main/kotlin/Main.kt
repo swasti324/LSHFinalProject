@@ -13,15 +13,12 @@ fun parse():List<String> {
 
     return lines
 }
+
 fun main() {
-    parse()
-
-    val nn = NearestNeighbor(listOf(""))
-
-    val vocab = listOf("He", "el", "Wo", "or", "rl", "ld", "ll", "lo")
-    val sparseVectors = List(nn.sparseVector(setOf("He", "el", "ll", "lo"), vocab))
-            val hash = (0..vocab.size).toList().shuffled(Random.Default)
-
-        val signatures = nn.minHash(sparseVectors, vocab, hash)
-    print(signatures)
+    val nn = NearestNeighbor(listOf(
+        "The young boys are playing outdoors and the man is smiling nearby",
+        "The kids are playing outdoors near a man with a smile",
+        "A person on a black motorbike is doing tricks with a jacket",
+        "A man in a black jacket is doing tricks on a motorbike",
+    ))
 }

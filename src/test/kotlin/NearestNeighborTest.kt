@@ -25,17 +25,25 @@ class NearestNeighborTest {
     }
 
     @Test
-    fun minHash() {
+    fun denseVectors() {
         val nn = NearestNeighbor(listOf(""))
 
-        val vocab = listOf("He", "el", "Wo", "or", "rl", "ld", "ll", "lo")
-        val sparseVectors = Map(nn.sparseVector(setOf("He", "el", "ll", "lo"), vocab), nn.sparseVector(setOf("Wo","or", "rl", "ld")
-            val hash = (0..vocab.size).toList().shuffled(Random.Default)
+        val sparseVectors = listOf(
+            "11000001".map { it == '1' },
+            "00011100".map { it == '1' },
+        )
 
+        val hashes = listOf(
+            listOf(2, 4, 6, 1, 0, 7, 3, 5),
+            listOf(6, 0, 7, 1, 2, 5, 4, 3),
+        )
 
-        val signatures = nn.minHash(sparseVectors, vocab)
-        print(signatures)
+        val denseVectors = listOf(
+            listOf(3, 1),
+            listOf(1, 5),
+        )
 
+        assertEquals(denseVectors, nn.denseVectors(sparseVectors, hashes))
     }
 
     @Test

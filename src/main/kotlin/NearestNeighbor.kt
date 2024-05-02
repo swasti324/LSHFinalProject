@@ -1,7 +1,12 @@
 package org.example
+import jdk.incubator.vector.Vector
+import kotlin.math.sign
 import kotlin.random.Random
-class NearestNeighbor(strings: List<String>) {
-
+class NearestNeighbor(
+    strings: List<String>,
+    denseVectorLength: Int = 100,
+    numberOfBands: Int = 20)
+{
     init {
         val shingles = strings.map {shingle(it)}
         val vocabSet: LinkedHashSet<String> = LinkedHashSet()
@@ -9,7 +14,12 @@ class NearestNeighbor(strings: List<String>) {
         val vocab = vocabSet.shuffled()
 
         val sparseVectors = shingles.map { sparseVector(it, vocab) }
-        // val denseVectors = sparseVectors.map { denseVector(it) }
+        val hashes = List(denseVectorLength) { (List(vocab.size) { it }).shuffled() }
+        val denseVectors = denseVectors(sparseVectors, hashes)
+
+        val candidates = candidates(denseVectors, numberOfBands)
+
+        println(candidates)
     }
 
     fun shingle(string: String, k: Int = 2): Set<String> {
@@ -24,29 +34,24 @@ class NearestNeighbor(strings: List<String>) {
         return vocab.map { it in shingles }
     }
 
-    fun minHash(sparseVectors: List<List<Boolean>>, vocab: List<String>, hash:List<Int>):List<List<Int>>{
-//         vocab is given. list of index of vocab created
-//        shuffle the vocab many times?
-//        compare several shuffles with a sparse vector to generate a signature
-//        once a signature is created return it
+    fun denseVectors(sparseVectors: List<List<Boolean>>, hashes: List<List<Int>>): List<List<Int>> {
+        val signatures = mutableListOf<List<Int>>()
 
-        //            for each element in shuffled hash
-//                shuffled hash, id takes the value of current(4 at index j = 0 for example)
-//                      check if sparsevector[i] ==1
+        for (sparseVector in sparseVectors) {
+            val signature = mutableListOf<Int>()
 
-//                            add the hash id to the signature vector
-
-        val signatures = MutableList(sparseVectors.size) { mutableListOf<Int>() }
-
-        for (i in vocab.indices) {
-//            val hash = (0..vocab.size).toList().shuffled(Random.Default)
-            for (j in hash.indices){
-                val id = hash.indexOf(j)
-                if(sparseVectors[i][hash.indexOf(j)]){
-                    signatures[i].add(id)
+            for (hash in hashes) {
+                for (i in hash.indices) {
+                    if (sparseVector[hash[i]]) {
+                        signature.add(i)
+                        break
+                    }
                 }
             }
+
+            signatures.add(signature)
         }
+
         return signatures
     }
 
@@ -99,8 +104,6 @@ class NearestNeighbor(strings: List<String>) {
             }
         }
 
-        println(bands)
-
         // Now the bands are populated
         // Create a set to hold the candidate pairs
         val candidates = mutableSetOf<Pair<Int, Int>>()
@@ -128,10 +131,6 @@ class NearestNeighbor(strings: List<String>) {
 
         return candidates
     }
-
-//    fun findClosest(string: String) {
-//        TODO()
-//    }
 
     fun jaccard(a: List<Boolean>, b: List<Boolean>): Double {
         val aANDb = (a.zip(b).map { if (it.first && it.second) 1 else 0 }).sum()
