@@ -32,7 +32,11 @@ class NearestNeighbor(
         val candidates = candidates(denseVectors, numberOfBands)
 
         // Print the candidate pairs
-        println(candidates)
+        for (pair in candidates) {
+            println("(${pair.first+1}, ${pair.second+1}) | Jaccard similarity: ${jaccard(sparseVectors[pair.first], sparseVectors[pair.second])}")
+            println("  ${strings[pair.first]}")
+            println("  ${strings[pair.second]}")
+        }
     }
 
     /**
