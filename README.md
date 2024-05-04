@@ -237,6 +237,17 @@ The more candidate pairs are found for two signatures the more we can be sure th
 ```
 ## Testing + Tuning LSH
 
+To test the Nearest Neighbor class, we used two datasets, one of quotes and one of test lines from the
+[Semantic Text Similarity Dataset Hub](https://github.com/brmson/dataset-sts). The class will print the candidate pairs
+and their jaccard similarity.
+```Kotlin
+// Print the candidate pairs
+for (pair in candidates) {
+    println("(${pair.first+1}, ${pair.second+1}) | Jaccard similarity: ${jaccard(sparseVectors[pair.first], sparseVectors[pair.second])}")
+    println("  ${strings[pair.first]}")
+    println("  ${strings[pair.second]}")
+}
+```
 ```Kotlin
 
     /**
@@ -262,6 +273,23 @@ The more candidate pairs are found for two signatures the more we can be sure th
     }
 ```
 
-
-
+Here is an example output of just the strings from the dataset:
+```
+--- TEST DATA PAIRS ---
+(3, 4) | Jaccard similarity: 0.5737704918032787
+  The young boys are playing outdoors and the man is smiling nearby
+  The kids are playing outdoors near a man with a smile
+(5, 6) | Jaccard similarity: 0.86
+  A person on a black motorbike is doing tricks with a jacket
+  A person in a black jacket is doing tricks on a motorbike
+(5, 7) | Jaccard similarity: 0.7307692307692307
+  A person on a black motorbike is doing tricks with a jacket
+  A man in a black jacket is doing tricks on a motorbike
+(6, 7) | Jaccard similarity: 0.8478260869565217
+  A person in a black jacket is doing tricks on a motorbike
+  A man in a black jacket is doing tricks on a motorbike
+(1, 2) | Jaccard similarity: 0.6323529411764706
+  A group of kids is playing in a yard and an old man is standing in the background
+  A group of children is playing in the house and there is no man standing in the background
+```
 
